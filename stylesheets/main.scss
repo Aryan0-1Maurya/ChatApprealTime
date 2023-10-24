@@ -1,0 +1,587 @@
+@use "sass:color";
+@use "normalize";
+@import url("https://fonts.googleapis.com/css2?family=Electrolize&family=Ubuntu:ital,wght@0,300;0,400;1,300;1,400&family=Rubik:wght@300&display=swap");
+
+$background-color: #181818;
+$primary-color: #cfcfcf;
+$font-family: "Ubuntu", sans-serif;
+$gradient1: linear-gradient(92.7deg, #56d364 -1.37%, #79c0ff 78.71%);
+$gradient2: linear-gradient(141.27deg, #ff904e -4.24%, #ff5982 21.25%, #ec68f4 44.33%, #79e2ff 83.46%);
+$gradient3: linear-gradient(130deg, #027bfd -24.67%, #9f51fb 53.55%);
+$headerHeight: 3.5em;
+$footerHeight: 3em;
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html,
+.chats {
+    scroll-behavior: smooth;
+}
+
+P::-moz-selection {
+    color: #000;
+    background: chartreuse;
+}
+
+p::selection {
+    color: #000;
+    background: chartreuse;
+}
+
+@mixin gradientText($gradient: $gradient1) {
+    background: $gradient;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: lighter;
+}
+
+@mixin gradientBorder($border: 1px, $background: #000, $gradient) {
+    position: relative;
+
+    background: $background;
+    background-clip: padding-box;
+    border: solid $border transparent;
+
+    &:before {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: -1;
+        margin: -$border;
+        border-radius: inherit;
+        background: $gradient;
+    }
+}
+
+@mixin box() {
+    margin: 0.4em 0.8em;
+    border-radius: 0.25em;
+    background-color: darken($background-color, 2);
+    background: linear-gradient(140deg, #010101, #141414);
+    box-shadow: #000 2px 2px 2px, inset #3a3a3a 2px 2px 2px;
+    transition: transform 0.5s;
+
+    &:hover {
+        transform: scale(1.02);
+        box-shadow: #000 2px 2px 4px, inset #3a3a3a 2px 2px 2px;
+    }
+}
+
+@mixin scrollBar($color: #999, $width: 8px, $backgrounds: #000) {
+    &::-webkit-scrollbar {
+        border-radius: 5px;
+        height: 10px;
+        width: $width;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: $color;
+        border-radius: 5px;
+    }
+
+    &::-webkit-scrollbar-track {
+        border-radius: 5px;
+        background: $backgrounds;
+    }
+}
+
+@mixin noScrollBar() {
+    &::-webkit-scrollbar {
+        height: 0;
+        width: 0;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        height: 0;
+        width: 0;
+    }
+
+    &::-webkit-scrollbar-track {
+        height: 0;
+        width: 0;
+    }
+}
+
+@mixin led($size: "0.25em", $color) {
+    width: $size;
+    height: $size;
+    background-color: $color;
+    border-radius: 50%;
+    box-shadow: rgb(0 0 0 / 20%) 0 -1px 7px 1px, inset darken($color, 25) 0 -1px 9px, darken($color, 2) 0 2px 12px;
+}
+
+body {
+    background-color: $background-color;
+    color: $primary-color;
+    font-family: $font-family;
+}
+
+header {
+    position: relative;
+    height: $headerHeight;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 10;
+    background: darken($background-color, 5);
+    box-shadow: darken($background-color, 10) 0px 2px 4px;
+
+    .status-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        height: inherit;
+
+        .led {
+            @include led(0.75em, lime);
+        }
+        .onlineCount {
+            font-family: "Electrolize", sans-serif;
+            color: lime;
+            font-size: 0.8em;
+            position: absolute;
+            bottom: 2px;
+        }
+    }
+
+    .logo-container {
+        h1 {
+            text-align: center;
+            margin: 0.3em 0px;
+            font-size: 1.8em;
+            font-weight: lighter;
+            // @include gradientText($gradient2);
+            font-family: "Rubik", sans-serif;
+            background: linear-gradient(141.27deg, #ff904e -4.24%, #ff5982 21.25%, #ec68f4 44.33%, #79e2ff 83.46%);
+            background-size: 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+
+            animation: gradientHeading 10s ease infinite;
+
+            @keyframes gradientHeading {
+                0%,
+                100% {
+                    background-position: 0 50%;
+                }
+
+                50% {
+                    background-position: 100% 50%;
+                }
+            }
+        }
+    }
+
+    .settingIcon {
+        img {
+            width: 2em;
+            animation: rotate 2s infinite linear paused forwards;
+
+            &:hover {
+                animation-play-state: running;
+            }
+            @keyframes rotate {
+                from {
+                    transform: rotate(0deg);
+                }
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+        }
+    }
+}
+
+.welcomePage {
+    // display: none;
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    background: #181818;
+    z-index: 10;
+    overflow: scroll;
+    @include noScrollBar();
+
+    h2 {
+        font-weight: lighter;
+        text-align: center;
+        font-size: 2.3em;
+        margin: 20vh auto;
+        span {
+            @include gradientText($gradient1);
+            font-weight: normal;
+        }
+    }
+
+    form#inputUsername {
+        margin: 17em auto 4em auto;
+        max-width: 45em;
+        display: none;
+
+        input {
+            width: 85%;
+            border-radius: 0.3em;
+            padding: 7px;
+            box-shadow: #000 2px 2px 4px;
+            display: block;
+            font-size: 20px;
+            margin: 0.75em auto;
+            border: 2px solid;
+
+            &[type="text"] {
+                border-color: #666;
+                background-color: #313131;
+                color: #fff;
+                &:focus {
+                    outline: none;
+                    &:invalid {
+                        border-color: orangered;
+                    }
+                    &:valid {
+                        border-color: lime;
+                    }
+                }
+            }
+
+            &[type="submit"] {
+                background: $gradient1;
+                border-color: #181818;
+                color: #000;
+            }
+        }
+    }
+
+    .loader {
+        margin-top: 15em;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        // display: none;
+        .wave {
+            width: 4px;
+            height: 5em;
+            background: linear-gradient(45deg, cyan, #fff);
+            margin: 10px;
+            animation: wave 1s linear infinite;
+            border-radius: 20px;
+            transform: scale(0);
+            @for $i from 2 through 10 {
+                &:nth-child(#{$i}) {
+                    animation-delay: $i * 0.1s;
+                }
+            }
+            @keyframes wave {
+                0%,
+                100% {
+                    transform: scale(0);
+                }
+                50% {
+                    transform: scale(1);
+                }
+            }
+        }
+    }
+}
+
+.typingStatus {
+    position: fixed;
+    background: darken($background-color, 5);
+    width: 100%;
+    text-align: center;
+    z-index: 5;
+    top: $headerHeight - 1em;
+    padding: 0.2em;
+    font-size: 0.8em;
+    font-style: italic;
+    color: darken(chartreuse, 4);
+    animation: blink 0.5s infinite alternate linear;
+
+    @keyframes blink {
+        from {
+            color: darken(chartreuse, 4);
+        }
+        to {
+            color: darken(chartreuse, 20);
+        }
+    }
+}
+
+main {
+    .onlineUsersPage,
+    form#msgForm,
+    .settingsPage,
+    .chats {
+        position: fixed;
+        left: 0;
+        right: 0;
+        width: 100vw;
+        background-color: $background-color;
+    }
+
+    .onlineUsersPage {
+        z-index: 2;
+        left: -100%;
+        overflow-y: scroll;
+        height: calc(100vh - ($headerHeight));
+        @include scrollBar($gradient1, 0.2em);
+
+        & > h2 {
+            @include gradientText($gradient1);
+            font-weight: lighter;
+            text-align: center;
+            font-size: 1.8em;
+            margin: 1.5em;
+        }
+
+        .onlineUsers-container {
+            .onlineUser {
+                @include box();
+                width: 90%;
+                margin: 0.6em 0.8em;
+                padding: 0.8em;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                flex-direction: row;
+
+                &:last-child {
+                    margin-bottom: 3em;
+                }
+
+                .details {
+                    .name {
+                        font-size: 1.1em;
+                        margin-bottom: 0.2em;
+                    }
+                    .lastSeen {
+                        font-size: 0.75em;
+                        color: darken($primary-color, 20);
+                        font-style: italic;
+                    }
+                }
+                .status {
+                    &.online {
+                        @include led(12px, lime);
+                    }
+                    &.offline {
+                        @include led(12px, red);
+                    }
+                }
+            }
+        }
+    }
+
+    .settingsPage {
+        z-index: 3;
+        left: 100%;
+        background-color: $background-color;
+        height: calc(100vh - ($headerHeight));
+
+        h2 {
+            @include gradientText($gradient3);
+            text-align: center;
+            font-size: 2em;
+            margin: 1.5em auto 1em auto;
+        }
+
+        p {
+            width: 90%;
+            margin: auto auto 2em auto;
+            text-align: justify;
+            font-size: 1em;
+
+            a {
+                color: dodgerblue;
+                text-decoration: none;
+            }
+        }
+
+        button {
+            width: 90%;
+            display: block;
+            padding: 0.4em;
+            font-size: 1em;
+            margin: 0.5em auto;
+            border-radius: 0.25em;
+            transition: transform 0.3s;
+            border: 1px solid transparent;
+            box-shadow: #000 2px 2px 4px;
+
+            &:hover {
+                transform: scale(0.95);
+            }
+
+            &:active {
+                transform: scale(0.8);
+            }
+
+            &.scroll,
+            &.sound {
+                background: darken(#fff, 20);
+            }
+
+            &.logout {
+                background-color: orangered;
+            }
+
+            &.viewSource {
+                background: $gradient1;
+            }
+
+            &.bugReport {
+                background: $gradient3;
+            }
+        }
+    }
+
+    .chats {
+        // display: none;
+        @include scrollBar($gradient3, 0.2em);
+        overflow-y: scroll;
+        height: calc(100vh - ($headerHeight + $footerHeight));
+
+        & > div:last-child {
+            margin-bottom: 4em;
+        }
+
+        .message {
+            @include box();
+            width: 80%;
+            padding: 0.2em;
+
+            &.receive {
+                float: left;
+            }
+
+            &.send {
+                float: right;
+                .username {
+                    @include gradientText($gradient2);
+                }
+            }
+
+            .username {
+                font-size: 0.8em;
+                padding: 0.2em 0 0 0.4em;
+                display: inline-block;
+                @include gradientText();
+            }
+
+            .country {
+                display: inline-block;
+                color: darken($primary-color, 25);
+                font-size: 0.7em;
+            }
+
+            .text {
+                font-size: 1em;
+                font-weight: lighter;
+                padding: 0.1em 0 0.2em 0.5em;
+                word-break: break-word;
+
+                a {
+                    color: dodgerblue;
+                    text-decoration: none;
+                    font-style: italic;
+                }
+            }
+
+            .time {
+                font-size: 0.55em;
+                text-align: right;
+                font-style: italic;
+                color: darken($primary-color, 25);
+                padding: 0 0.4em 0.2em 0;
+                font-family: "Electrolize", sans-serif;
+            }
+        }
+    }
+
+    form#msgForm {
+        $minHeight: 2.2em;
+        height: $footerHeight;
+        bottom: 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        flex-direction: row;
+        min-height: $minHeight;
+        z-index: 1;
+        // display: none;
+
+        button,
+        input {
+            height: $footerHeight - 2em;
+            border-radius: 0.3em;
+            min-height: $minHeight;
+        }
+
+        input {
+            flex-basis: 82%;
+            color: $primary-color;
+            border: 2px solid #666;
+            background-color: #313131;
+            font-size: 1.1em;
+            padding-left: 0.4em;
+            &:focus {
+                outline: none;
+                &:invalid {
+                    border-color: orangered;
+                }
+                &:valid {
+                    border-color: chartreuse;
+                }
+            }
+        }
+
+        button {
+            background: $gradient2;
+            flex-basis: 12%;
+            border: none;
+            img {
+                width: 18px;
+                height: 18px;
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 600px) {
+    main {
+        $chatScreenWidth: 60vw;
+        $sidePagesWidth: calc((100vw - $chatScreenWidth) / 2);
+
+        .chats {
+            .message {
+                width: 60%;
+            }
+        }
+
+        .chats,
+        form#msgForm {
+            width: $chatScreenWidth;
+            left: $sidePagesWidth;
+        }
+
+        .onlineUsersPage {
+            width: $sidePagesWidth;
+            left: 0;
+        }
+        .settingsPage {
+            width: $sidePagesWidth;
+            left: $chatScreenWidth + $sidePagesWidth;
+        }
+    }
+}
